@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(MyApp());}
@@ -32,14 +33,18 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String _value = "";
+  String name = "";
 
   Future _incrementCounter() async{
-
     String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#ff6666", "Cancel", false, ScanMode.DEFAULT);
+    String url = "https://shopping.yahooapis.jp/ShoppingWebService/V3/itemSearch?appid=dj00aiZpPU43aHIyUkp0U2FpeCZzPWNvbnN1bWVyc2VjcmV0Jng9NWU-&jan_code=${barcodeScanRes}";
 
-    setState(() {
-      _value = barcodeScanRes;
+    http.get(url).then((response) {
+      Map<String, dynamic> data = json.decode(response.body);
+      setState(() {
+        List<dynamic> hits = data["hits"];
+        name = hits[0]["name"];
+      });
     });
   }
 
@@ -57,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
               'Valor del Scan',
             ),
             Text(
-                _value,
+                name,
                 style: Theme.of(context).textTheme.display1
             ),
           ],
