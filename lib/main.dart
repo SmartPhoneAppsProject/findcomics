@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:http/http.dart' as http;
 
+import './rename.dart';
+
 void main() {
   runApp(MyApp());}
 
@@ -45,6 +47,10 @@ class _MyHomePageState extends State<MyHomePage> {
         List<dynamic> hits = data["hits"];
         name = hits[0]["name"];
       });
+
+      Navigator.of(context).push(MaterialPageRoute(builder: (context){
+        return Rename(name: name);
+      }));
     });
   }
 
