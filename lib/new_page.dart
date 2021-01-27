@@ -13,6 +13,7 @@ class NextPage extends StatelessWidget{
       ),
       body: Container(
         color: Colors.red,
+        child: Text(name),
       ),
     );
   }
