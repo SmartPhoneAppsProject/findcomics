@@ -7,6 +7,7 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:http/http.dart' as http;
 
 import './rename.dart';
+import './new_page.dart';
 
 void main() {
   runApp(MyApp());}
@@ -70,6 +71,15 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
                 name,
                 style: Theme.of(context).textTheme.display1
+            ),
+            RaisedButton(
+              child: Text("漫画詳細へ"),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => NextPage(name)),
+                );
+              },
             ),
           ],
         ),
