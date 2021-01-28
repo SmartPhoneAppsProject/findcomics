@@ -28,12 +28,16 @@ class Rename extends StatelessWidget {
                 labelText: 'タイトル',
               ),
             ),
+            Container(
+              padding: EdgeInsets.all(16.0),
+              child: RaisedButton(
+                child: Text('決定'),
+                onPressed: () => Navigator.of(context).pop(_controller.text),
+              ),
+            ),
           ]
         ),
       ),
-      // body: Center(
-      //   child: Text(name),
-      // ),
     );
   }
 }
