@@ -37,21 +37,22 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String name = "";
+  String newName = "";
 
   Future _incrementCounter() async{
     String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#ff6666", "Cancel", false, ScanMode.DEFAULT);
     String url = "https://shopping.yahooapis.jp/ShoppingWebService/V3/itemSearch?appid=dj00aiZpPU43aHIyUkp0U2FpeCZzPWNvbnN1bWVyc2VjcmV0Jng9NWU-&jan_code=${barcodeScanRes}";
 
-    http.get(url).then((response) {
+    http.get(url).then((response) async {
       Map<String, dynamic> data = json.decode(response.body);
-      setState(() {
-        List<dynamic> hits = data["hits"];
-        name = hits[0]["name"];
-      });
-
-      Navigator.of(context).push(MaterialPageRoute(builder: (context){
+      List<dynamic> hits = data["hits"];
+      name = hits[0]["name"];
+      newName = await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
         return Rename(name: name);
       }));
+      setState(() {
+        name = newName;
+      });
     });
   }
 
