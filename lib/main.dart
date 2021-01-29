@@ -7,6 +7,7 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:http/http.dart' as http;
 
 import './rename.dart';
+import './new_page.dart';
 
 void main() {
   runApp(MyApp());}
@@ -64,12 +65,42 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'Valor del Scan',
-            ),
-            Text(
-                name,
-                style: Theme.of(context).textTheme.display1
+            ListView(
+              children: <Widget>[
+                Card(
+                child:ListTile(
+                  title: Text(name),
+                  onTap: (){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => NextPage(name)),
+                    );
+                  },
+                ),
+                ),
+                Card(
+                  child:ListTile(
+                    title: Text(name),
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => NextPage(name)),
+                      );
+                    },
+                  ),
+                ),
+                Card(
+                  child:ListTile(
+                    title: Text(name),
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => NextPage(name)),
+                      );
+                    },
+                  ),
+                ),
+              ]
             ),
           ],
         ),
