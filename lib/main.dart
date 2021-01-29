@@ -13,7 +13,7 @@ void main() {
   runApp(MyApp());}
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,14 +21,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Scan BarCode and QR'),
+      home: MyHomePage(title: 'My Bookshelf'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
 
+  MyHomePage({Key key, this.title}) : super(key: key);
   final String title;
 
   @override
@@ -36,22 +36,37 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String name = "";
-  String newName = "";
+  String name = ""; // apiからとってきた本のタイトル
+  String newName = "";  // 書き換えた本のタイトル
+  String empty = "漫画を追加してね";  // 本を追加してないときに表示する文字列
+  var nameList = new List.generate(3, (i)=>"漫画を追加してね"); // 表示する漫画のタイトルを格納するリスト
 
   Future _incrementCounter() async{
+
+    // バーコードをスキャンする
     String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#ff6666", "Cancel", false, ScanMode.DEFAULT);
+
+    // janコードから商品を検索
     String url = "https://shopping.yahooapis.jp/ShoppingWebService/V3/itemSearch?appid=dj00aiZpPU43aHIyUkp0U2FpeCZzPWNvbnN1bWVyc2VjcmV0Jng9NWU-&jan_code=${barcodeScanRes}";
 
     http.get(url).then((response) async {
       Map<String, dynamic> data = json.decode(response.body);
       List<dynamic> hits = data["hits"];
       name = hits[0]["name"];
+
+      // 漫画を追加する画面にnameを渡して遷移し、返ってきた値をnewNameに格納する
       newName = await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
         return Rename(name: name);
       }));
       setState(() {
-        name = newName;
+
+        // nameの中身をnewNameに書き換える
+        for (int i = 0; i < nameList.length; i++) {
+          if (nameList[i] == empty) {
+            nameList[i] = newName;
+            break;
+          }
+        }
       });
     });
   }
@@ -66,37 +81,42 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            // 漫画を一覧表示するリスト
             ListView(
+              shrinkWrap: true,
               children: <Widget>[
                 Card(
                 child:ListTile(
-                  title: Text(name),
+                  title: Text(nameList[0]),  // name(本のタイトル)を表示
                   onTap: (){
+                    // リストをタップすると漫画詳細画面にnameを渡して遷移する
                     Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => NextPage(name)),
+                        MaterialPageRoute(builder: (context) => NextPage(nameList[0])),
                     );
                   },
                 ),
                 ),
                 Card(
                   child:ListTile(
-                    title: Text(name),
+                    title: Text(nameList[1]),  // name(本のタイトル)を表示
                     onTap: (){
+                      // リストをタップすると漫画詳細画面にnameを渡して遷移する
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => NextPage(name)),
+                        MaterialPageRoute(builder: (context) => NextPage(nameList[1])),
                       );
                     },
                   ),
                 ),
                 Card(
                   child:ListTile(
-                    title: Text(name),
+                    title: Text(nameList[2]),  // name(本のタイトル)を表示
                     onTap: (){
+                      // リストをタップすると漫画詳細画面にnameを渡して遷移する
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => NextPage(name)),
+                        MaterialPageRoute(builder: (context) => NextPage(nameList[2])),
                       );
                     },
                   ),
@@ -106,6 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+      // カメラを起動するボタン
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
